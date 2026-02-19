@@ -1,28 +1,38 @@
-cmake_minimum_required(VERSION 3.22.1)
-project(lalona_crypto C)
+package com.lalona
 
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fstack-protector-all -D_FORTIFY_SOURCE=2 -fPIC -O2 -fvisibility=hidden")
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-z,relro -Wl,-z,now -Wl,--strip-all")
+import android.os.Bundle
+import android.view.WindowManager
+import com.facebook.react.ReactActivity
+import com.facebook.react.ReactActivityDelegate
+import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
+import com.facebook.react.defaults.DefaultReactActivityDelegate
 
-find_library(log-lib log)
-# Android NDK ships BoringSSL-compatible OpenSSL headers via libcrypto
-find_library(crypto-lib crypto)
+class MainActivity : ReactActivity() {
 
-add_library(
-    lalona_crypto
-    SHARED
-    ${CMAKE_CURRENT_SOURCE_DIR}/crypto_core.c
-)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-target_link_libraries(
-    lalona_crypto
-    ${log-lib}
-    ${crypto-lib}
-)
+        // ── FLAG_SECURE: prevents screenshots, screen recording, and
+        //    appearance in the recent-apps thumbnail ──────────────────
+        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
 
-# Prevent export of all symbols except JNI entry points
-set_target_properties(lalona_crypto PROPERTIES
-    C_VISIBILITY_PRESET hidden
-    VISIBILITY_INLINES_HIDDEN ON
-)
+        // ── Prevent any window content leaking via system overlays ───
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Re-enforce FLAG_SECURE on every pause transition
+        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+    }
+
+    override fun getMainComponentName(): String = "lalona-secure"
+
+    override fun createReactActivityDelegate(): ReactActivityDelegate =
+        DefaultReactActivityDelegate(this, mainComponentName, fabricEnabled)
+}
