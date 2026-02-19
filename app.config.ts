@@ -26,9 +26,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ['expo-secure-store'],
     ['expo-file-system'],
   ],
-  extra: {
-    eas: { projectId: 'replace-with-your-eas-project-id' },
-  },
-  updates: { enabled: false }, // No OTA updates — security-sensitive binary
+  updates: { enabled: false },
   jsEngine: 'hermes',
 });
