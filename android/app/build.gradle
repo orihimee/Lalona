@@ -1,0 +1,77 @@
+plugins {
+    id "com.android.application"
+    id "org.jetbrains.kotlin.android"
+}
+
+android {
+    compileSdkVersion 35
+    ndkVersion "27.0.12077973"
+
+    defaultConfig {
+        applicationId "com.lalona.secure"
+        minSdkVersion 26
+        targetSdkVersion 35
+        versionCode 1
+        versionName "1.0.0"
+
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c11 -fstack-protector-all -fPIE -D_FORTIFY_SOURCE=2 -O2"
+                arguments "-DANDROID_STL=none",
+                          "-DCMAKE_BUILD_TYPE=Release",
+                          "-DANDROID_ARM_NEON=TRUE"
+            }
+        }
+        ndk {
+            abiFilters "arm64-v8a"  // Restrict to 64-bit only
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
+                          'proguard-rules.pro'
+            // R8 full mode
+            proguardFiles += file('proguard-rules.pro')
+        }
+        debug {
+            debuggable false
+            jniDebuggable false
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
+                          'proguard-rules.pro'
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "src/main/java/com/lalona/native/CMakeLists.txt"
+            version "3.22.1"
+        }
+    }
+
+    packagingOptions {
+        jniLibs { useLegacyPackaging false }
+        exclude "**/*.map"
+        exclude "**/BuildConfig.class"
+        exclude "**/R.class"
+        exclude "**/R$*.class"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions { jvmTarget = "17" }
+
+    // Enable R8 full mode
+    buildFeatures { buildConfig false }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.22"
+    // Use system BoringSSL via NDK — no external crypto dependency needed
+}
