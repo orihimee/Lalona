@@ -3,13 +3,13 @@ import { ExpoConfig, ConfigContext } from 'expo/config';
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: 'Lalona',
-  slug: 'lalona-secure',
+  slug: 'lalona',
   version: '1.0.0',
   orientation: 'portrait',
   scheme: 'lalona',
   platforms: ['android'],
   android: {
-    package: 'com.lalona.secure',
+    package: 'com.lalona',
     versionCode: 1,
     adaptiveIcon: {
       foregroundImage: './assets/adaptive-icon.png',
