@@ -1,43 +1,14 @@
-# ─── R8 Full Mode ────────────────────────────────────────────────────────────
--allowaccessmodification
--repackageclasses 'x'
--flattenpackagehierarchy 'y'
--overloadaggressively
--optimizationpasses 10
--dontusemixedcaseclassnames
+# Add project specific ProGuard rules here.
+# By default, the flags in this file are appended to flags specified
+# in /usr/local/Cellar/android-sdk/24.3.3/tools/proguard/proguard-android.txt
+# You can edit the include path and order by changing the proguardFiles
+# directive in build.gradle.
+#
+# For more details, see
+#   http://developer.android.com/guide/developing/tools/proguard.html
 
-# ─── Keep only what JNI & React Native bridge requires ───────────────────────
--keepclasseswithmembernames,includedescriptorclasses class * {
-    native <methods>;
-}
+# react-native-reanimated
+-keep class com.swmansion.reanimated.** { *; }
+-keep class com.facebook.react.turbomodule.** { *; }
 
--keep class com.lalona.MainActivity { *; }
--keep,allowobfuscation class com.lalona.NativeCryptoModule {
-    public <methods>;
-}
--keepclassmembers class com.lalona.NativeCryptoModule {
-    public native *;
-}
-
-# ─── Strip all logging ────────────────────────────────────────────────────────
--assumenosideeffects class android.util.Log {
-    public static boolean isLoggable(java.lang.String, int);
-    public static int v(...);
-    public static int i(...);
-    public static int w(...);
-    public static int d(...);
-    public static int e(...);
-    public static int wtf(...);
-}
-
-# ─── Strip stack traces & source attribution ─────────────────────────────────
--renamesourcefileattribute SourceFile
--keepattributes SourceFile,LineNumberTable
-
-# ─── Prevent reflection-based attacks on class structure ─────────────────────
--dontskipnonpubliclibraryclassmembers
-
-# ─── React Native internals ───────────────────────────────────────────────────
--keep class com.facebook.react.** { *; }
--keep class com.facebook.hermes.** { *; }
--dontwarn com.facebook.**
+# Add any project specific keep options here:
