@@ -1,6 +1,6 @@
 import React from 'react';
-import { View } from 'react-native';
+import ChapterScreen from './src/screens/ChapterScreen';
 
 export default function App() {
-  return <View style={{ flex: 1, backgroundColor: '#000' }} />;
+  return <ChapterScreen />;
 }
